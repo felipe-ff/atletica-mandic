@@ -1,10 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { ProductService } from 'src/app/services/product.service';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Product } from 'src/app/interfaces/product';
 import { NavController, LoadingController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
-import { Subscription } from 'rxjs';
+import { Plugins, CameraResultType, CameraSource, FilesystemDirectory, FilesystemEncoding } from '@capacitor/core';
+import { UserService } from '../services/user.service';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { Utils } from "../utils/utils";
+import { TrainingCategoryService } from '../services/training-category.service';
+import { take } from 'rxjs/operators';
+import { TrainingService } from '../services/training.service';
+import { Training } from '../interfaces/training';
+import * as Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 @Component({
   selector: 'app-details',
@@ -12,64 +19,157 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./details.page.scss'],
 })
 export class DetailsPage implements OnInit {
-  private productId: string = null;
-  public product: Product = {};
-  private loading: any;
-  private productSubscription: Subscription;
+  loading: any;
+  photo = "https://firebasestorage.googleapis.com/v0/b/mandic-atletic.appspot.com/o/user-placeholder.jpg?alt=media&token=79c3f100-b681-4706-82ba-68436ceb6d62";
+  isEdit = false;
+  modalities = [];
+  utils = Utils;
+  userService: UserService;
+  directorModality;
+
+  @ViewChild("pieCanvas", { static: false }) doughnutCanvas: ElementRef;
+
+  private doughnutChart: Chart;
 
   constructor(
-    private productService: ProductService,
+    userService: UserService,
     private activatedRoute: ActivatedRoute,
     private navCtrl: NavController,
     private loadingCtrl: LoadingController,
     private authService: AuthService,
+    private trainingService: TrainingService,
+    private trainingCategoryService: TrainingCategoryService,
+    private cdr: ChangeDetectorRef,
+    private angularFireStorage: AngularFireStorage,
     private toastCtrl: ToastController
   ) {
-    this.productId = this.activatedRoute.snapshot.params['id'];
-
-    if (this.productId) this.loadProduct();
+    this.userService = userService;
   }
 
-  ngOnInit() { }
+  ngOnInit() {
 
-  ngOnDestroy() {
-    if (this.productSubscription) this.productSubscription.unsubscribe();
   }
 
-  loadProduct() {
-    this.productSubscription = this.productService.getProduct(this.productId).subscribe(data => {
-      this.product = data;
+  ionViewWillEnter() {
+    this.loadPhoto();
+    this.initChart();
+
+    this.trainingCategoryService.getAllTrainingCategories().pipe(take(1)).subscribe(categories => {
+      if (this.userService.loggedUser.categories) {
+        this.userService.loggedUser.categories.forEach( (userCatId: any) => {
+          this.modalities.push(categories.find(cat => cat.id === userCatId));
+        });
+      }
+      if (this.userService.loggedUser.teaches) {
+        this.directorModality = categories.find(category => category.id === this.userService.loggedUser.teaches);
+      }
     });
   }
 
-  async saveProduct() {
-    await this.presentLoading();
+  initChart() {
+    Chart.plugins.register(ChartDataLabels);
+    this.trainingService.getTrainingsByUserAttendance(this.userService.loggedUser.id).subscribe((trainings: Training[]) => {
+      let presence = 0;
+      let misses = 0;
+      trainings.forEach((training: Training) => {
+        const attendance = training.attendanceListDetailed.find(details => details.userId === this.userService.loggedUser.id);
+        if (attendance.present) {
+          presence++;
+        } else {
+          misses++;
+        }
+      });
 
-    this.product.userId = this.authService.getAuth().currentUser.uid;
+      let total = presence + misses;
 
-    if (this.productId) {
-      try {
-        await this.productService.updateProduct(this.productId, this.product);
-        await this.loading.dismiss();
+      if (total) {
+        this.doughnutChart = new Chart(this.doughnutCanvas.nativeElement, {
+          type: "pie",
+          data: {
+            labels: ["Presenças", "Faltas"],
+            datasets: [
+              {
+                label: "Porcentagem",
+                data: [presence, misses],
+                backgroundColor: ["#36A2EB", "#FF6384"],
+                borderWidth: 1,
+              }
+            ]
+          },
+          options: {
+              plugins: {
+                datalabels: {
+                  color: 'white',
+                  font: {
+                    weight: 'bold'
+                  },
+                  formatter: function(value, context) {
+                    return (100 * value / total).toFixed(2) + '%';
+                  }
+                }
+              }
+            }
+          });
+        }
+      });
+  }
 
-        this.navCtrl.navigateBack('/home');
-      } catch (error) {
-        this.presentToast('Erro ao tentar salvar');
-        this.loading.dismiss();
-      }
-    } else {
-      this.product.createdAt = new Date().getTime();
+  async takePicture() {
+    const image = await Plugins.Camera.getPhoto({
+      quality: 50,
+      allowEditing: false,
+      resultType: CameraResultType.Uri
+    });
 
-      try {
-        await this.productService.addProduct(this.product);
-        await this.loading.dismiss();
+    this.uploadFile(image);
+  }
 
-        this.navCtrl.navigateBack('/home');
-      } catch (error) {
-        this.presentToast('Erro ao tentar salvar');
-        this.loading.dismiss();
-      }
+  somethingChanged() {
+    this.userService.updateUser(this.userService.loggedUser.id, this.userService.loggedUser);
+  }
+
+  async uploadFile(image) {
+    const { Filesystem } = Plugins;
+
+    this.stat(image.path);
+    const photoInTempStorage = await Filesystem.readFile({ path: image.path });
+
+    const ref = this.angularFireStorage.storage.ref().child('profile/' + this.userService.loggedUser.id + '.png');
+
+    ref.putString(photoInTempStorage.data, 'base64').then( snapshot => {
+      ref.getDownloadURL().then(url => {
+        this.userService.loggedUser.profileImageUrl = url;
+        this.userService.updateUser(this.userService.loggedUser.id, this.userService.loggedUser);
+
+        this.photo = url;
+      });
+    });
+  }
+
+  async stat(path) {
+    try {
+      const { Filesystem } = Plugins;
+      let ret = await Filesystem.stat({
+        path: path
+       // directory: FilesystemDirectory.Documents
+      });
+      console.log(ret.size);
+    } catch(e) {
+      console.error('Unable to stat file', e);
     }
+  }
+
+  getExtension() {
+    var pathPhoto = this.userService.loggedUser.profileImageUrl.split('?')[0];
+    return pathPhoto.substring(pathPhoto.length-4, pathPhoto.length);
+  }
+
+  loadPhoto() {
+    const path = this.userService.loggedUser.id + this.getExtension();
+    const storageRef = this.angularFireStorage.storage.ref().child(path);
+
+    //this.photo = storageRef.getDownloadURL();
+    this.photo = this.userService.loggedUser.profileImageUrl;
   }
 
   async presentLoading() {
@@ -80,5 +180,21 @@ export class DetailsPage implements OnInit {
   async presentToast(message: string) {
     const toast = await this.toastCtrl.create({ message, duration: 2000 });
     toast.present();
+  }
+
+  async logout() {
+    await this.presentLoading();
+
+    this.authService.logout().then(() => {
+      console.log('loged out');
+      this.loading.dismiss();
+    }).catch(function(error) {
+      console.error(error);
+      this.loading.dismiss();
+    });
+  }
+
+  isJudo(name: string) {
+    return name.includes('Judo');
   }
 }

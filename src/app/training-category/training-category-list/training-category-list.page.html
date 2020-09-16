@@ -1,0 +1,24 @@
+<app-header-menu title="Modalidades de Treinos"></app-header-menu>
+<ion-content class="page">
+   <ion-list>
+    <ion-item-sliding *ngFor="let training of $trainingList | async">
+      <ion-item>
+         <ion-label>
+           <h2>{{training.name}}</h2>
+         </ion-label>
+         <div class="buttons">
+           <ion-button size="small">Editar</ion-button>            
+           <ion-button size="small">Desativar</ion-button> 
+        </div>
+       </ion-item>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button routerLink="/training-category-create" expand="block">
+      Adicionar categoria
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

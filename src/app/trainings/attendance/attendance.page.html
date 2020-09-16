@@ -1,0 +1,53 @@
+<app-header-menu title="Presenças"></app-header-menu>
+
+<ion-content>
+  <ion-list *ngIf="!users.length">
+    <ion-item *ngFor="let item of [0, 1, 2]">
+    <ion-avatar slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+    </ion-avatar>
+    <ion-label>
+        <h3>
+        <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </h3>
+        <p>
+        <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+        </p>
+        <p>
+        <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text>
+        </p>
+    </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-item-sliding *ngFor="let user of users">
+    <ion-item>
+      <ion-avatar slot="start">
+        <ion-img [src]="user.profileImageUrl"></ion-img>
+      </ion-avatar>
+
+      <ion-label>
+        {{ user.name }}
+      </ion-label>
+
+      <ion-checkbox slot="end" [(ngModel)]="user.checked"></ion-checkbox>
+    </ion-item>
+
+    <ion-item-options side="end">
+      <ion-item-option color="danger">
+      <ion-icon slot="top" name="trash"></ion-icon>
+      Excluir
+      </ion-item-option>
+    </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button (click)="save()" expand="block">
+      Salvar
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

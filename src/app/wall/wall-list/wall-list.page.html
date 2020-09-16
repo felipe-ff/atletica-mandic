@@ -1,0 +1,41 @@
+<app-header-menu title="Mural"></app-header-menu>
+<ion-content class="page">
+  <ion-segment mode="md" *ngIf="categoryList.length > 1" scrollable [(ngModel)]="selectedSegment" (ionChange)="segmentChanged($event)">
+    <ion-segment-button *ngFor="let category of categoryList" [value]="category.id">
+      {{category.name}}
+    </ion-segment-button>
+  </ion-segment>
+   <ion-list *ngIf="wallList.length">
+    <ion-card *ngFor="let wall of wallList">
+      <div class="manage-icons" *ngIf="userService.isAdministrator()">
+        <ion-icon (click)="goToPage($event, wall.id)" name="create-outline"></ion-icon>
+        <ion-icon (click)="presentAlertConfirm($event, wall.id, wall.url)" name="trash-outline"></ion-icon>
+      </div>
+      <ion-card-content>
+          <ion-img [src]="wall.url" (click)="showFullscreenImage(wall)"></ion-img>
+      </ion-card-content>
+      <ion-card-header>
+        <ion-card-title>{{wall.name}}</ion-card-title>
+      </ion-card-header>
+      <div class="description-div" appHideElement>
+        <div [ngClass]="{'description': !showMore(wall.id)}">{{wall.description}}</div>
+        <div *ngIf="wall.link" class="link">Link: <a href="{{wall.link}}">{{wall.link}}</a></div>
+        <div #moreText (click)="toggleMore($event, wall.id)" class="more" style="display: none;">
+          {{showMore(wall.id) ? 'ver menos' : 'ver mais'}}
+        </div>
+      </div>
+    </ion-card>
+  </ion-list>
+
+  <div class="no-items">
+    <p *ngIf="wallList.length === 0">Ainda não há posts aqui</p>
+  </div>
+</ion-content>
+
+<ion-footer *ngIf="userService.isAdministrator()">
+  <ion-toolbar>
+    <ion-button routerLink="/tabs/wall/wall-create" expand="block">
+      Adicionar post
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

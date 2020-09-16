@@ -1,9 +1,17 @@
-<ion-header [translucent]="true">
+<ion-header mode="md" [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-back-button *ngIf="showBack" defaultHref='/tabs/wall' color="white"></ion-back-button>
     </ion-buttons>
-    <ion-img slot="end" (click)="navigateToProfilePage()" class="profile-image" src="https://lh3.googleusercontent.com/a-/AOh14Gik8W6d7UjW-Xi6_Y1yHDOEGos0B-q5dtI6Oi1bMQ=s96-c-rg-br100"></ion-img>
-    <ion-title>Atletica</ion-title>
+    <ion-avatar slot="end" (click)="navigateToProfilePage()" class="profile-image circular--square">
+      <ion-img *ngIf="showPhoto" [src]="userService.loggedUser.profileImageUrl"></ion-img>
+    </ion-avatar>
+    <ion-title>
+      <div class="title-div">
+        <div class="left">{{title}}</div>
+        <div class="center">A.A.A.M.XIII.M.</div>
+        <div class="right"></div>
+      </div>
+    </ion-title>
   </ion-toolbar>
 </ion-header>

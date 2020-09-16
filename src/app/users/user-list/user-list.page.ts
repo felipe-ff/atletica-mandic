@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/interfaces/user';
-import { Subscription } from 'rxjs';
+import { take, first } from 'rxjs/operators';
+import { TrainingCategoryService } from 'src/app/services/training-category.service';
 
 @Component({
   selector: 'app-user-list',
@@ -11,52 +11,77 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./user-list.page.scss'],
 })
 export class UserListPage implements OnInit {
-  private loading: any;
-  public users = new Array<User>();
-  private usersSubscription: Subscription;
+  loading: any;
+  users = new Array<User>();
+  originalUsers = new Array<User>();
+  selectedSegment = 'unverified';
+  userService: UserService;
+  listLoading = true;
+  teachesName;
 
   constructor(
-    private authService: AuthService,
     private loadingCtrl: LoadingController,
-    private userService: UserService,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private trainingCategoryService: TrainingCategoryService,
+    userService: UserService
   ) {
-    this.usersSubscription = this.userService.getUsers().subscribe(data => {
-      this.users = data;
-      console.log(data);
-    });
+    this.userService = userService;
   }
 
   ngOnInit() { }
 
-  ngOnDestroy() {
-    this.usersSubscription.unsubscribe();
+  ionViewWillEnter() {
+    this.loadTeachesName();
+   this.loadUsers();
   }
 
-  async logout() {
-    await this.presentLoading();
+  loadUsers() {
+    this.listLoading = true;
+    const searchResult$ = this.userService.isAdministrator() ?
+      this.userService.getUsersBySegment(this.selectedSegment) :
+      this.userService.getUsersBySportCategory(this.userService.loggedUser.teaches);
 
-    try {
-      await this.authService.logout();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      this.loading.dismiss();
+    searchResult$.subscribe(data => {
+      this.listLoading = false;
+      this.users = data;
+      this.originalUsers = [ ...data ];
+    });
+  }
+
+  async loadTeachesName() {
+    if (this.userService.loggedUser.teaches) {
+      const category = await this.trainingCategoryService.getTrainingCategoriesWithInFilter(new Array(this.userService.loggedUser.teaches)).pipe(first()).toPromise();;
+      this.teachesName = `(${category[0]?.name})`;
     }
   }
-
+ 
   async presentLoading() {
     this.loading = await this.loadingCtrl.create({ message: 'Aguarde...' });
     return this.loading.present();
   }
 
-  async deleteUser(id: string) {
+  segmentChanged(event) {
+    this.users = new Array<User>();
+    this.selectedSegment = event.detail.value;
+    this.loadUsers();
+  }
+
+  filterByName(ev) {
+    const val = ev.target.value;
+    if (val && val.trim() != '') {
+      this.users = this.originalUsers.filter(user => user.name.toLowerCase().includes(val.toLowerCase())) || new Array<User>();
+    } else {
+      this.users = [...this.originalUsers ]; 
+    }
+  }
+
+ /*  async deleteUser(id: string) {
     try {
       await this.userService.deleteUser(id);
     } catch (error) {
       this.presentToast('Erro ao tentar deletar');
     }
-  }
+  } */
 
   async presentToast(message: string) {
     const toast = await this.toastCtrl.create({ message, duration: 2000 });

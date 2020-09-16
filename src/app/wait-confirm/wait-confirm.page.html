@@ -1,0 +1,19 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button (click)="logout()" defaultHref="login"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Confirmação de Acesso</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="background-login max-height"></div>
+
+  <div id="contaier" class="fundo">
+    <span class="msg">O administrador já foi notificado do seu cadastro!</span>
+    <span class="msg" style="top: 24%">Aguarde até que o administrador libere o seu acesso...</span>
+
+    <div class="img-tigre max-height"></div>
+  </div>
+</ion-content>

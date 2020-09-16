@@ -1,0 +1,42 @@
+<ion-tabs>
+
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="wall">
+      <ion-icon name="home"></ion-icon>
+      <ion-label>Mural</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button *ngIf="userService.isAdministrator() || isDirector()" tab="users">
+      <ion-icon name="people"></ion-icon>
+      <ion-label>Usuários</ion-label>
+    </ion-tab-button>
+
+    
+    <ion-tab-button tab="trainings">
+      <ion-icon name="football-outline"></ion-icon>
+      <ion-label>Treinos</ion-label>
+    </ion-tab-button>
+
+    <!--<ion-tab-button *ngIf="userService.isAdministrator()" tab="training-category-list">
+      <ion-icon name="grid-outline"></ion-icon>
+      <ion-label>Categorias</ion-label>
+    </ion-tab-button>-->
+
+    <ion-tab-button tab="my-sports">
+      <ion-icon name="grid-outline"></ion-icon>
+      <ion-label>Esportes</ion-label>
+    </ion-tab-button>
+    
+    <!--<ion-tab-button *ngIf="userService.isUser() || userService.isDirector()" tab="profile-edit">
+      <ion-icon name="person-circle-outline"></ion-icon>
+      <ion-label>Perfil</ion-label>
+    </ion-tab-button>-->
+    
+    <ion-tab-button tab="notifications">
+      <ion-icon name="notifications-circle-outline"></ion-icon>
+      <ion-label>Notificações</ion-label>
+      <ion-badge *ngIf="userService.notificationSeenCounter > 0" color="primary">{{userService.notificationSeenCounter}}</ion-badge>
+    </ion-tab-button>
+  </ion-tab-bar>
+
+</ion-tabs>

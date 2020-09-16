@@ -1,16 +1,28 @@
-<app-header-menu></app-header-menu>
-
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Usuários</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header-menu title="Usuários {{teachesName}}"></app-header-menu>
 
 <ion-content>
-  <ion-list *ngIf="!users.length">
+  <ion-searchbar type="text" debounce="500" (ionInput)="filterByName($event)" placeholder="Busca..." class="searchbarinput"></ion-searchbar>
+  <ion-segment mode="md" *ngIf="userService.isAdministrator()" scrollable [(ngModel)]="selectedSegment" (ionChange)="segmentChanged($event)">
+    <ion-segment-button value="all">
+      Todos
+    </ion-segment-button>
+    <ion-segment-button value="unverified">
+      Não verificados
+    </ion-segment-button>
+    <ion-segment-button value="student">
+      Não Sócios
+    </ion-segment-button>
+    <ion-segment-button value="member">
+      Sócios
+    </ion-segment-button>
+    <ion-segment-button value="director">
+      Diretores
+    </ion-segment-button>
+    <ion-segment-button value="admin">
+      Administradores
+    </ion-segment-button>
+  </ion-segment>
+  <ion-list *ngIf="listLoading">
     <ion-item *ngFor="let item of [0, 1, 2]">
       <ion-avatar slot="start">
         <ion-skeleton-text animated></ion-skeleton-text>
@@ -29,50 +41,33 @@
     </ion-item>
   </ion-list>
 
-  <ion-list>
+  <ion-list *ngIf="!listLoading">
     <ion-item-sliding *ngFor="let user of users">
-      <ion-item button [routerLink]="['/details', user.id]">
+      <ion-item button [routerLink]="['/tabs/users/user-edit', user.id]">
         <ion-avatar slot="start">
-          <img [src]="user.picture">
+          <ion-img [src]="user.profileImageUrl"></ion-img>
         </ion-avatar>
 
         <ion-label>
           {{ user.name }}
-          <p>{{ user.description }}</p>
-          <p>{{ user.createdAt | date: 'short' }}</p>
+         <!-- <p>{{ user.description }}</p>
+          <p>{{ user.createdAt | date: 'short' }}</p> -->
         </ion-label>
 
         <ion-icon *ngIf="user.verified" name="checkmark-circle-outline"></ion-icon>
 
-        <ion-note color="primary" slot="end" *ngIf="user.price">{{ user.price | currency: 'BRL' }}</ion-note>
+       <!-- <ion-note color="primary" slot="end" *ngIf="user.price">{{ user.price | currency: 'BRL' }}</ion-note> -->
       </ion-item>
 
       <ion-item-options side="end">
-        <ion-item-option color="danger" (click)="deleteUser(user.id)">
+        <ion-item-option color="danger">
           <ion-icon slot="top" name="trash"></ion-icon>
           Excluir
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
+  <p *ngIf="!listLoading && !users?.length" class="no-results">
+    Não há resultados
+  </p>
 </ion-content>
-
-<ion-footer>
-  <ion-toolbar>
-    <ion-grid>
-      <ion-row>
-        <ion-col size="6">
-          <ion-button (click)="logout()" color="danger" expand="block">
-            Sair
-          </ion-button>
-        </ion-col>
-
-        <ion-col size="6">
-          <ion-button routerLink="/details" expand="block">
-            Add produto
-          </ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-toolbar>
-</ion-footer>

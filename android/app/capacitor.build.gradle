@@ -9,10 +9,10 @@ android {
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
-
+    implementation project(':capacitor-fcm')
 
 }
-
+apply from: "../../node_modules/com-sarriaroman-photoviewer/src/android/photoviewer.gradle"
 
 if (hasProperty('postBuildExtras')) {
   postBuildExtras()

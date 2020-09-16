@@ -10,30 +10,37 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'folder/:id',
-    loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule),
-    canActivate: [AuthGuard]
-  },
-  { 
-    path: 'login', 
+    path: 'login',
     loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule), 
     canActivate: [LoggedGuard]
   },
   {
-    path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'user-list',
-    loadChildren: () => import('./users/user-list/user-list.module').then( m => m.UserListPageModule),
+    path: 'tabs',
+    loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'profile-edit',
     loadChildren: () => import('./details/details.module').then( m => m.DetailsPageModule),
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'wait-confirm',
+    loadChildren: () => import('./wait-confirm/wait-confirm.module').then( m => m.WaitConfirmPageModule)
+  },
+  {
+    path: 'trainings',
+    loadChildren: () => import('./trainings/trainings.module').then( m => m.TrainingsPageModule)
+  },
+  {
+    path: 'users',
+    loadChildren: () => import('./users/users.module').then( m => m.UsersPageModule)
+  },
+  {
+    path: 'wall',
+    loadChildren: () => import('./wall/wall.module').then( m => m.WallPageModule)
   }
+
 ];
 
 @NgModule({

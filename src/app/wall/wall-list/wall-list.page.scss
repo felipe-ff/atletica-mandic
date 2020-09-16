@@ -1,0 +1,121 @@
+ion-avatar {
+  --border-radius: 0;
+}
+
+ion-card-content {
+  padding: 0;
+  // height: 131px;
+}
+
+ion-list {
+  margin-top: 10px;
+}
+
+ion-card {
+  // background: #242526; //black
+  border-radius: 11px;
+  margin-top: -4px;
+  margin-bottom: 30px;
+  //  box-shadow: none;
+
+  ion-card-header {
+    padding-top: 0;
+    display: flex;
+    justify-content: space-between;
+
+    ion-card-title {
+      font-size: 15px;
+      margin-top: 9px;
+      font-weight: bold;
+    }
+  }
+
+  img {
+    width: 100%;
+  }
+
+  .description-div {
+    margin: -7px 5px 20px 17px;
+
+    .description {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .link {
+      margin-top: 10px;
+      white-space: nowrap;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      a {
+        text-decoration: none;
+      }
+    }
+
+    .more {
+      font-weight: bold;
+    }
+  }
+
+  .manage-icons {
+    position: absolute;
+    z-index: 9999;
+    right: -1px;
+    top: 0;
+    color: black;
+    background: white;
+    border-radius: 11px;
+
+    ion-icon {
+      margin-left: 8px;
+      margin-right: 8px;
+      font-size: 23px;
+    }
+
+    ion-button {
+      // height: 22px;
+      // font-size: 12px;
+      --padding-top: 8px !important;
+      --padding-end: 10px !important;
+      --padding-bottom: 9px !important;
+      --padding-start: 10px !important;
+    }
+
+    button {
+      padding: 10px;
+    }
+  }
+}
+
+ion-segment {
+  ion-segment-button {
+    font-size: 13px;
+    text-transform: capitalize;
+    //color: slategray;
+    font-weight: bold;
+  }
+}
+
+.no-items {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+  width: 100%;
+
+  p {
+    width: 100%;
+    background-color: #f9eded;
+    padding: 0.6em 0.6em 0.6em;
+    font-size: 75%;
+    line-height: 1;
+    //  color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    /* vertical-align: baseline; */
+    border-radius: 0.5em;
+  }
+}

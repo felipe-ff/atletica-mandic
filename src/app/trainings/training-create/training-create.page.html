@@ -1,0 +1,41 @@
+<app-header-menu title="Treinos"></app-header-menu>
+
+<ion-content class="ion-padding">
+  <h3>Novo Treino:</h3>
+  <ion-list>
+    <ion-item>
+      <ion-label position="floating">Nome</ion-label>
+      <ion-input type="text" maxlength="30" [(ngModel)]="selectedTraining.name" placeholder="Nome"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Categoria</ion-label>
+      <ion-select [(ngModel)]="selectedCategory" placeholder="Selecione">
+        <ion-select-option *ngFor="let cat of $trainingCatList | async" [value]="cat.id">{{cat.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Data e hora</ion-label>
+      <ion-datetime required displayFormat="D MMM YYYY H:mm" [monthShortNames]="monthShortNames" min="2020" max="2050" [value]="date" (ionChange)="changeDate($event)"></ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Descrição</ion-label>
+      <ion-textarea [(ngModel)]="selectedTraining.description"></ion-textarea>
+    </ion-item>
+  </ion-list>
+
+  <ion-button *ngIf="selectedTraining.id" class="cancel-btn" color="danger" expand="block" (click)="presentAlertConfirm()">
+    Cancelar treino
+  </ion-button>
+
+  <ion-button *ngIf="selectedTraining.id" class="cancel-btn" color="danger" expand="block" (click)="presentAlertDelete()">
+    Excluir treino
+  </ion-button>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button (click)="save()" expand="block">
+      Salvar
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

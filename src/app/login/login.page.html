@@ -1,64 +1,138 @@
 <ion-content class="swiper-no-swiping">
-  <div class="container top"> <!--[hidden]="keyboard.isVisible"-->
-    <img src="/assets/img/logo2.png">
-
-    <ion-segment (ionChange)="segmentChanged($event)" mode="ios" value="login">
-      <ion-segment-button mode="ios" value="login">
-        <ion-label>Login</ion-label>
-      </ion-segment-button>
-      <ion-segment-button mode="ios" value="register">
-        <ion-label>Cadastro</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-  </div>
 
   <ion-slides>
     <ion-slide>
-      <div class="slide-inner ion-padding">
+      <div class="slide-inner">
         <span>Login</span>
 
-        <ion-item class="ion-margin-top" lines="none">
-          <ion-input type="email" placeholder="E-mail" [(ngModel)]="userLogin.email"></ion-input>
+        <ion-item class="ion-margin-top" lines="none" mode="md">
+          <ion-label position="floating">E-mail</ion-label>
+          <ion-input type="email" [(ngModel)]="userLogin.email"></ion-input>
         </ion-item>
 
-        <ion-item class="ion-margin-top" lines="none">
-          <ion-input type="password" placeholder="Senha" [(ngModel)]="userLogin.password"></ion-input>
+        <ion-item class="ion-margin-top" lines="none" mode="md">
+          <ion-label position="floating">Senha</ion-label>
+          <ion-input type="password" [(ngModel)]="userLogin.password"></ion-input>
         </ion-item>
 
-        <ion-button class="ion-margin-top" (click)="login()" color="light" expand="block">
+        <ion-button class="ion-margin-top" color="light" (click)="login()" expand="block">
           Entrar
+        </ion-button>
+
+        <p class="register" (click)="nextSlide($event)">Não possui uma conta? Cadastre-se aqui!</p>
+
+        <p class="register" (click)="presentAlertConfirm()">Esqueceu sua senha?</p>
+
+        <ion-button class="ion-margin-top" *ngIf="showResendButton" (click)="resendEmail()" expand="block">
+          Reenviar e-mail de confirmação
         </ion-button>
       </div>
     </ion-slide>
 
-    <ion-slide>
+    <ion-slide class="register-slide">
       <div class="slide-inner ion-padding">
-        <span>Cadastro</span>
+        <span>Identificação Pessoal</span>
 
-        <ion-item class="ion-margin-top" lines="none">
-          <ion-input type="text" placeholder="Nome" [(ngModel)]="userRegister.name"></ion-input>
+        <ion-item class="ion-margin-top" lines="none" mode="md">
+          <ion-label position="floating">Nome</ion-label>
+          <ion-input type="text" [(ngModel)]="userRegister.name"></ion-input>
+        </ion-item>
+
+        <ion-item class="ion-margin-top" lines="none" mode="md">
+          <ion-label position="floating">E-mail</ion-label>
+          <ion-input type="email" [(ngModel)]="userRegister.email"></ion-input>
         </ion-item>
 
         <ion-item class="ion-margin-top" lines="none">
-          <ion-input type="email" placeholder="E-mail" [(ngModel)]="userRegister.email"></ion-input>
+          <ion-select [(ngModel)]="userRegister.gender" placeholder="Sexo">
+            <ion-select-option *ngFor="let gender of genders" [value]="gender.id">{{gender.name}}</ion-select-option>
+          </ion-select>
         </ion-item>
 
-        <ion-item class="ion-margin-top" lines="none">
-          <ion-input type="password" placeholder="Senha" [(ngModel)]="userRegister.password"></ion-input>
+        <div class="control-buttons">
+          <ion-chip color="light" (click)="backSlide($event)">
+            <ion-icon name="chevron-back-circle-outline"></ion-icon>
+            <ion-label>Voltar</ion-label>
+          </ion-chip>
+
+          <ion-chip color="light" (click)="nextSlide($event, 1)" [ngClass]="{'disabled': !verifyStep1()}">
+            <ion-label>Avançar</ion-label>
+            <ion-icon name="chevron-forward-circle-outline"></ion-icon>
+          </ion-chip>
+        </div>
+
+        </div>
+      </ion-slide>
+
+    <ion-slide class="register-slide">
+      <div class="slide-inner ion-padding">
+        <span>Identificação do Aluno</span>
+
+        <ion-item class="ion-margin-top" lines="none" mode="md">
+          <ion-label position="floating">R. A.</ion-label>
+          <ion-input type="text" [(ngModel)]="userRegister.registerCode"></ion-input>
         </ion-item>
 
-        <ion-button class="ion-margin-top" (click)="register()" color="light" expand="block">
-          Cadastrar
+        <ion-item class="ion-margin-top" lines="none" mode="md">
+          <ion-label position="floating">Turma</ion-label>
+          <ion-input type="text" [(ngModel)]="userRegister.schoolClass"></ion-input>
+        </ion-item>
+
+        <div class="control-buttons">
+          <ion-chip color="light" (click)="backSlide($event)">
+            <ion-icon name="chevron-back-circle-outline"></ion-icon>
+            <ion-label>Voltar</ion-label>
+          </ion-chip>
+
+          <ion-chip color="light" (click)="nextSlide($event, 2)" [ngClass]="{'disabled': !verifyStep2()}">
+            <ion-label>Avançar</ion-label>
+            <ion-icon name="chevron-forward-circle-outline"></ion-icon>
+          </ion-chip>
+        </div>
+      </div>
+    </ion-slide>
+
+    <ion-slide class="register-slide">
+      <div class="slide-inner ion-padding">
+        <span>Senha</span>
+
+        <ion-item class="ion-margin-top" lines="none" mode="md">
+          <ion-label position="floating">Senha</ion-label>
+          <ion-input type="password" [(ngModel)]="userRegister.password"></ion-input>
+        </ion-item>
+
+        <ion-item class="ion-margin-top" lines="none" mode="md">
+          <ion-label position="floating">Confirme a Senha</ion-label>
+          <ion-input type="password" [(ngModel)]="confirmPass"></ion-input>
+        </ion-item>
+
+        <div class="control-buttons">
+          <ion-chip color="light" (click)="backSlide($event)">
+            <ion-icon name="chevron-back-circle-outline"></ion-icon>
+            <ion-label>Voltar</ion-label>
+          </ion-chip>
+
+          <ion-chip color="light" (click)="register()">
+            <ion-icon name="checkmark-done-circle-outline"></ion-icon>
+            <ion-label>Concluir</ion-label>
+          </ion-chip>
+        </div>
+
+      </div>
+    </ion-slide>
+
+    <ion-slide class="register-slide">
+      <div class="slide-inner ion-padding">
+        <span style="font-weight: normal;">
+          Cadastro realizado com sucesso. Um link de confirmação foi enviado para {{userRegister.email}} acesse seu e-mail e confirme seu cadastro!
+        </span>
+
+        <ion-button class="ion-margin-top" color="light" (click)="slides.slideTo(0)" expand="block">
+          Retornar para o login
         </ion-button>
       </div>
     </ion-slide>
   </ion-slides>
 
-  <div class="ocean">
-    <div class="waves" [ngStyle]="{'background-position-x': wavesPosition + 'px'}"></div>
-
-    <div class="container bottom ion-text-center"> <!--[hidden]="keyboard.isVisible"-->
-      <span>Aplicativo da Atlética Mandic</span>
-    </div>
-  </div>
+  <img class="logo-atletica">
 </ion-content>

@@ -1,0 +1,63 @@
+.camera-btn {
+    width: 80px;
+    height: 80px;
+
+    ion-icon {
+        width: 40px;
+        height: 50px;
+    }
+}
+
+.profile-area {
+    margin-bottom: 30px;
+    margin-top: 20px;
+
+    ion-row {
+        margin-bottom: 10px;
+    }
+}
+
+.circular--square {
+    border-radius: 50%;
+}
+
+.edit-icon {
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    right: 9px;
+    top: 8px;
+}
+
+ion-input {
+    //display: block;
+    border: 1px solid grey;
+    font-size: 13px;
+}
+
+ion-item {
+    font-size: 13px;
+}
+
+.separator {
+    background: #F5F5F5;
+    width: 110%;
+    margin-left: -16px;
+    height: 11px;
+}
+
+.modality-title {
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+.modalities-row {
+    margin-top: -8px;
+}
+
+img.judo {
+    height: 14px;
+}

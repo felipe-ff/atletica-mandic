@@ -1,0 +1,64 @@
+<app-header-menu title="Treinos"></app-header-menu>
+
+<ion-content>
+  <ion-segment mode="md" *ngIf="trainingCatList.length > 1" scrollable [(ngModel)]="selectedSegment" (ionChange)="segmentChanged($event)">
+    <ion-segment-button *ngFor="let category of trainingCatList" [value]="category.id">
+      {{category.name}}
+    </ion-segment-button>
+  </ion-segment>
+  <ion-list *ngIf="!trainingList.length">
+    <ion-item *ngFor="let item of [0, 1, 2]">
+      <ion-avatar slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-avatar>
+      <ion-label>
+        <h3>
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </h3>
+        <p>
+          <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+        </p>
+        <p>
+          <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text>
+        </p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-item-sliding *ngFor="let training of trainingList">
+      <ion-item [ngClass]="{'cancelled': training.cancelled}">
+        <ion-avatar slot="start">
+          <fa-icon *ngIf="training.category" [icon]="['fas', training.category.icon]"></fa-icon> <!-- TODO JUDO -->
+        </ion-avatar>
+
+        <ion-label>
+          <p class="title">
+            {{ training.name }}
+            <span *ngIf="training.cancelled">(Cancelado)</span>
+          </p>
+          <p>{{ training.description }}</p>
+          <p>{{ training.date | date: 'dd/MM/yyyy HH:mm' }}</p>
+        </ion-label>
+
+        <div class="manage-buttons" *ngIf="training.id">
+          <ion-button size="small" *ngIf="showButton(training.category.id) && !training.cancelled" [routerLink]="['/tabs/trainings/training-attendance', training.id]">Presenças</ion-button>            
+          <ion-button class="edit" *ngIf="showButton(training.category.id) && !training.cancelled" [routerLink]="['/tabs/trainings/training-create', training.id]">
+            <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+          </ion-button>
+        </div>
+
+       <!-- <ion-note color="primary" slot="end" *ngIf="user.price">{{ user.price | currency: 'BRL' }}</ion-note> -->
+      </ion-item>
+
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>
+
+<ion-footer *ngIf="showCreateButton()">
+  <ion-toolbar>
+    <ion-button routerLink="/tabs/trainings/training-create" expand="block">
+      Adicionar treino
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

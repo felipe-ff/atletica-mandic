@@ -1,0 +1,55 @@
+<app-header-menu title="Mural"></app-header-menu>
+
+<ion-content class="ion-padding">
+  <h3>Novo Post:</h3>
+  <ion-list>
+    <ion-item>
+      <ion-label position="floating">Nome:</ion-label>
+      <ion-input type="text" [(ngModel)]="wallPost.name"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Categoria:</ion-label>
+      <ion-select [(ngModel)]="selectedCategory" placeholder="Selecione">
+        <ion-select-option *ngFor="let cat of $wallCategories | async" [value]="cat.id">{{cat.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Descrição:</ion-label>
+      <ion-textarea type="text" [(ngModel)]="wallPost.description"></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Link:</ion-label>
+      <ion-input type="text" [(ngModel)]="wallPost.link"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Imagem</ion-label>
+      <ion-input type="text" style="display: none;"></ion-input>
+      <div class="image-upload-area">
+        <ion-row class="ion-justify-content-center">
+          <img class="circular--square" *ngIf="photo | async" [src]="photo | async" width="75" height="75" >
+          <ion-button class="camera-btn" shape="round" (click)="takePicture()">
+            <ion-icon name="cloud-upload-outline"></ion-icon>
+          </ion-button>
+
+          <ion-spinner *ngIf="imageLoading" name="crescent"></ion-spinner>
+        </ion-row>
+      </div>
+    </ion-item>
+
+    <div *ngIf="wallPost.url" style="margin-top: 10px">
+      <img [src]="wallPost.url" height="160">
+    </div>
+</ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button (click)="save()" expand="block">
+      Salvar
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

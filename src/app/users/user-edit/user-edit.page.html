@@ -1,9 +1,60 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>user-edit</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header-menu title="Gerenciar usuário"></app-header-menu>
 
-<ion-content>
+<ion-content class="ion-padding">
+  <h4>{{selectedUser.name}}:</h4>
+  <ion-list>
+    <ion-item>
+      <ion-label position="floating">Nome:</ion-label>
+      <ion-input type="text" [readonly]="!userService.isAdministrator()" [(ngModel)]="selectedUser.name" placeholder="Nome"></ion-input>
+    </ion-item>
+
+    <ion-item *ngIf="userService.isAdministrator()">
+      <ion-label>Verificado</ion-label>
+      <ion-toggle [disabled]="!userService.isAdministrator()" [(ngModel)]="selectedUser.verified"></ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Tipo de usuário:</ion-label>
+
+      <ion-select *ngIf="userService.isAdministrator()" [(ngModel)]="selectedUser.role" placeholder="Selecione" (ionChange)="resetSports()">
+        <ion-select-option *ngFor="let role of roles" [value]="role.id">{{role.name}}</ion-select-option>
+      </ion-select>
+      <ion-input type="text" *ngIf="!userService.isAdministrator()" [readonly]="true" [value]="fetchRole(selectedUser.role)"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Diretor de:</ion-label>
+      <ion-select class="director-select" *ngIf="userService.isAdministrator()" [(ngModel)]="teaches" placeholder="Nenhum">
+        <ion-select-option *ngFor="let cat of trainingCatList" [value]="cat.id">{{cat.name}}</ion-select-option>
+      </ion-select>
+      <ion-button *ngIf="userService.isAdministrator()" class="clear-button" (click)="teaches = null">Limpar</ion-button>
+      <ion-input type="text" *ngIf="!userService.isAdministrator()" [readonly]="true" [value]="fetchCategoryName(selectedUser?.teaches)"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">RA:</ion-label>
+      <ion-input type="text" [readonly]="!userService.isAdministrator()" [(ngModel)]="selectedUser.registerCode" placeholder="Nome"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Turma:</ion-label>
+      <ion-input type="text" [readonly]="!userService.isAdministrator()" [(ngModel)]="selectedUser.schoolClass" placeholder="Nome"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Modalidades esportivas:</ion-label>
+      <ion-select multiple="true" [disabled]="!userService.isAdministrator()" [(ngModel)]="selectedCategories" placeholder="Nenhuma">
+        <ion-select-option *ngFor="let cat of trainingCatList" [value]="cat.id">{{cat.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
 
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button (click)="save()" expand="block">
+      Salvar
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

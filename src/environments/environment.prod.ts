@@ -1,13 +1,14 @@
 export const environment = {
   production: true,
   firebase: {
-    apiKey: "AIzaSyCtnRl5yF5XiHw9dsEnNrIwbdBZ4YrCJ8I",
-    authDomain: "atletica-mandic.firebaseapp.com",
-    databaseURL: "https://atletica-mandic.firebaseio.com",
-    projectId: "atletica-mandic",
-    storageBucket: "atletica-mandic.appspot.com",
-    messagingSenderId: "129496565966",
-    appId: "1:129496565966:web:3c3987963fec66cf46e89f",
-    measurementId: "G-F8PD6K1NZY"
-  }
+    apiKey: "AIzaSyAqMO0x9VSiwRJTEwaFtE4fedf4aHQNKig",
+    authDomain: "mandic-atletic.firebaseapp.com",
+    databaseURL: "https://mandic-atletic.firebaseio.com",
+    projectId: "mandic-atletic",
+    storageBucket: "mandic-atletic.appspot.com",
+    messagingSenderId: "447716035630",
+    appId: "1:447716035630:web:015a172675171f1ae823bf",
+    measurementId: "G-TW1P88KS2K"
+  },
+  notificationServerKey: 'key=AAAAaD30jC4:APA91bFkbzcH2hJmkmUdLPkVjokGSTN_zu5-vp-Olr4GomlMKjaUbOvSb-I-Oj08kPxMP5pCgB1ngc0AxAlo-xef6WLUDdY8UFfuJ78lHQdIqDmgglZaQUJJgiWtH82_WG_W1TgkCkfc'
 };

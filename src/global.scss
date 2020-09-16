@@ -29,4 +29,28 @@
     width: 37px;
     height: 37px;
     margin-right: 17px;
+    border-radius: 50%;
+}
+
+//ion-content.page, ion-footer {
+//    --ion-background-color:#EFEEF0;
+//}
+
+.searchbarinput {
+    input {
+        font-size: 15px !important;
+        height: 40px !important;
+    }
+}
+
+
+ion-item-option {
+    text-transform: capitalize !important;
+}
+
+.no-results {
+    font-weight: bold;
+    margin-left: 4em;
+    font-size: 15px;
+    margin-bottom: 4px;
 }

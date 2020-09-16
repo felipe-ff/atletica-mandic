@@ -1,0 +1,27 @@
+.circular--square {
+  img {
+    border-radius: 50%;
+  }
+}
+
+ion-header {
+  --ion-background-color: #3880ff;
+
+  ion-title {
+    color: white;
+  }
+
+  ion-back-button {
+    color: white;
+  }
+}
+
+.title-div {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.895em;
+
+  .left {
+    margin-right: 0.5em;
+  }
+}

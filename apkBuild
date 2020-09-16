@@ -1,0 +1,56 @@
+#!/bin/bash
+
+BASE_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
+cd ${BASE_DIR}/android
+
+cmd_sync(){
+    printf "Starting capacitor sync...\n"
+    ionic capacitor sync android 
+    ionic capacitor copy android
+}
+
+cmd_build() {
+    sync
+    
+    printf "Generating release APK...\n"
+    chmod +x gradlew
+    ./gradlew assembleRelease
+}
+
+cmd_sign() {
+    build
+
+    printf "Singing APK generatted...\n"
+    read -sp "Enter your KEYSTORE PATH: " PATH
+    KEYSTORE_PATH=${PATH}
+
+    read -sp "Enter your KEYSTORE PASS: " PASS
+    KEYSTORE_PASS=${PASS}
+
+    read -sp "Enter your KEYSTORE ALIAS: " ALIAS
+    KEYSTORE_ALIAS=${PASS}    
+
+    cd app/build/outputs/apk/release &&
+
+    jarsigner -keystore ${KEYSTORE_PATH} -storepass ${KEYSTORE_PASS} app-release-unsigned.apk ${KEYSTORE_ALIAS}
+    
+    zipalign 4 app-release-unsigned.apk app-release.apk
+}
+
+
+cmd_help() {
+    printf "\n==[ APK BUILD - ByFFF ]====================\n"
+    printf "\n  Usage: ./apkBuild [OPTIONAL]\n"
+    printf "\n   [OPTIONAL]: "
+    printf "\n     -> or 'sync',"
+    printf "\n     -> or 'release_sign'"    
+    printf "\n\n===========================================\n\n"
+}
+
+cd "$workdir"
+_cmd=${1?'command'}
+shift
+cmd_${_cmd} "$@"
+cd -
+
+#./apkBuild 

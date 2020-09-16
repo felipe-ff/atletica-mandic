@@ -6,22 +6,17 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { UserListPage } from './user-list.page';
-import { HeaderMenuPage } from 'src/app/header-menu/header-menu.page';
-
-const routes: Routes = [
-  {
-    path: '',
-    component: UserListPage
-  }
-];
+import { UserListPageRoutingModule } from './user-list-routing.module';
+import { HeaderMenuPageModule } from 'src/app/header-menu/header-menu.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    UserListPageRoutingModule,
+    HeaderMenuPageModule
   ],
-  declarations: [UserListPage, HeaderMenuPage]
+  declarations: [UserListPage]
 })
 export class UserListPageModule {}

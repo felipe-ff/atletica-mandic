@@ -1,0 +1,17 @@
+<app-header-menu title="Meus esportes"></app-header-menu>
+
+<ion-content>
+  <p>Toque em um esporte para se inscrever!</p>
+  <ion-list>
+    <ion-card mode="md" [ngClass]="{'selected': cat.selected}" (click)="presentAlertConfirm(cat)" *ngFor="let cat of builtList">
+      <ion-card-header>
+        <ion-card-title>
+          <fa-icon *ngIf="!isJudo(cat.name)" [icon]="['fas', cat.icon]"></fa-icon>
+          <ion-img *ngIf="isJudo(cat.name)" [src]="'../../assets/icon/' + (cat.selected ? 'lutador-branco.png' : cat.icon)"></ion-img>
+          {{cat.name}}
+        </ion-card-title>
+      </ion-card-header>
+    </ion-card>
+
+  </ion-list>
+</ion-content>

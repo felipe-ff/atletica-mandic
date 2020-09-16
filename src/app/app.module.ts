@@ -12,6 +12,12 @@ import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,7 +28,10 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    HttpClientModule,
+    AngularFireStorageModule,
+    FontAwesomeModule
   ],
   providers: [
     StatusBar,
@@ -31,4 +40,8 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(library: FaIconLibrary) {
+		library.addIconPacks(far, fas, fab);
+	}
+}
